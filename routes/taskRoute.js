@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const User = require('../Models/user');
 const verifyToken = require('../middleware/verifyToken')
-const task = require('../Models/task')
+const task = require('../Models/task');
+const { config } = require('dotenv');
 
 
 
@@ -29,16 +30,21 @@ router.post('/addtask',verifyToken, async(req,res)=>{
 })
 
 router.get('/tasks',verifyToken, async(req,res)=>{
-    const email = req.query.email
+    const email = req.user.email
+    const page= parseInt(req.query.page)
+    const size=parseInt(req.query.size)
+    console.log(page,size)
+    const findUserTask = await task.find({email:email}).skip(page*size).limit(size)
     
-    const findUserTask = await task.find({email:email})
    
     res.status(200).json(findUserTask)
 })
 
 router.get('/taskcount',verifyToken, async(req,res)=>{
-    const email = req.user.email;
-    const total= await task.find({email:email}).estimatedDocumentCount();
+    const email = req.user.email
+    console.log('count',email)
+    const total= await task.countDocuments({email:email})
+   
     res.send({total})
 })
 router.get('/tasks/:id',verifyToken, async(req,res)=>{
