@@ -5,7 +5,7 @@ require('./DB/DBConnection')
 const cors = require('cors')
 require('dotenv').config()
 const  cookieParser = require('cookie-parser')
-
+require('dotenv').config()
 app.use(cors({
   origin:'http://localhost:5173',
   credentials:true

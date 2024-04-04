@@ -6,7 +6,7 @@ const task = require('../Models/task')
 
 
 
-router.post('/addtask', async(req,res)=>{
+router.post('/addtask',verifyToken, async(req,res)=>{
     const {title,description,email}= req.body;
    
     if(!title && !description){
@@ -32,16 +32,30 @@ router.get('/tasks',verifyToken, async(req,res)=>{
     const email = req.query.email
     
     const findUserTask = await task.find({email:email})
+   
     res.status(200).json(findUserTask)
 })
-router.patch('/tasks/:id', async(req,res)=>{
+
+router.get('/taskcount',verifyToken, async(req,res)=>{
+    const email = req.user.email;
+    const total= await task.find({email:email}).estimatedDocumentCount();
+    res.send({total})
+})
+router.get('/tasks/:id',verifyToken, async(req,res)=>{
+    const id = req.params.id
+    console.log(id)
+    const findUserTask = await task.findById(id)
+    res.status(200).json(findUserTask)
+   
+})
+router.patch('/tasks/:id',verifyToken, async(req,res)=>{
     const updateid= req.params.id;
     const {title,description}= req.body;
      
     const updateTask = await task.findByIdAndUpdate(updateid,{title:title,description:description})
     res.status(200).send(updateTask)
 })
-router.delete('/tasks/:id', async(req,res)=>{
+router.delete('/tasks/:id', verifyToken, async(req,res)=>{
     const deleteId= req.params.id;
     const deleteTask = await task.findByIdAndDelete(deleteId)
     res.status(200).send("Task Deleted Successfully")
