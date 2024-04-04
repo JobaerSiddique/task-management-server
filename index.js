@@ -7,7 +7,7 @@ require('dotenv').config()
 const  cookieParser = require('cookie-parser')
 require('dotenv').config()
 app.use(cors({
-  origin:'https://task-management-client-iota.vercel.app',
+  origin:`https://task-management-client-iota.vercel.app `|| "http://localhost:5000",
   credentials:true
 }))
 app.use(express.json())
